@@ -57,7 +57,7 @@ class _CakeFactoryState extends State<CakeFactory> {
           squares.add(square);
         }
       }
-      // Now, you have a list of Depozit objects loaded from the file
+
     } catch (e) {
       print('Error loading Depozits from file: $e');
     }
@@ -75,7 +75,7 @@ class _CakeFactoryState extends State<CakeFactory> {
         centerTitle: true,
       ),
       body: LayoutBuilder(builder: (context, constraints) {
-        double spacing = constraints.maxWidth / 18; // Adjust the divisor as needed
+        double spacing = constraints.maxWidth / 18;
         return ListView(
           children: [
             Wrap(
@@ -173,6 +173,4 @@ class MySquare extends StatelessWidget {
       ),
     );
   }
-
-
 }
