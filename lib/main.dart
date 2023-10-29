@@ -1,9 +1,12 @@
+import 'package:cake_with_flutter/ShoppingCart.dart';
 import 'package:flutter/material.dart';
 import "dart:io";
 import "depozit.dart";
 import "retete.dart";
 import 'package:flutter/services.dart';
 import 'information.dart';
+import 'package:cake_with_flutter/ShoppingCart.dart';
+import  'ShoppingCart.dart';
 
 void main() => runApp(MaterialApp(home: CakeFactory(),debugShowCheckedModeBanner: false,));
 
@@ -18,12 +21,15 @@ class _CakeFactoryState extends State<CakeFactory> {
 
    List<Depozit> depozits = [];
    List<MySquare> squares = [];
+   String _name = '';
 
    @override
   void initState() {
     super.initState();
     loadDepozitsFromFile();
   }
+
+
 
   Future<void> loadDepozitsFromFile() async {
     //java stuff
@@ -63,11 +69,26 @@ class _CakeFactoryState extends State<CakeFactory> {
     }
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Welcome",
+        leading: IconButton(
+          icon: Icon(Icons.menu),
+          onPressed: () => print('s-a apasat'),
+        ),
+        actions: <Widget> [
+          FloatingActionButton(
+              onPressed: () {
+               print('meow');
+              },
+              child: Icon(Icons.shopping_basket),
+          ),
+        ],
+
+        title:const Text("Welcome",
           style: TextStyle(
               fontSize: 30,
           )
@@ -81,21 +102,35 @@ class _CakeFactoryState extends State<CakeFactory> {
             Wrap(
               alignment: WrapAlignment.center,
               spacing: spacing,
-              children: squares,
+              children:squares,
             ),
           ],
         );
       }),
     );
   }
+
+   void handleButtonPress(MySquare mySquare) {
+     String name = mySquare.wtf; // Use the getter to retrieve the name
+     // Now, 'name' contains the name from the MySquare widget
+     print('Received name: $name');
+     // You can use 'name' in this method.
+   }
+
+   set name(String value) {
+    _name = value;
+  }
 }
 //Nota: de facut ca box-urile sa isi faca resize in functie de ecran
 class MySquare extends StatelessWidget {
+  List<ShoppingCart> chesti = [];
   String name;
   Image ?image;
   String ?detalii;
   int ?durata_pregatire;
   int ?nr_prajituri;
+  String _wtf = '';
+
   //MySquare(this.name) : image = Image.asset('assets/$name.png');
   MySquare(this.name, this.detalii, this.durata_pregatire, this.nr_prajituri) : image = Image.asset('assets/$name.png');
   @override
@@ -105,23 +140,24 @@ class MySquare extends StatelessWidget {
         print('Detalii:$detalii');
         showDialog(
             context: context,
-            builder: (BuildContext){
-             return Dialog(
+            builder: (BuildContext context){
+             return AlertDialog(
                shape: RoundedRectangleBorder(
-                 borderRadius: BorderRadius.circular(8.0),
+                 borderRadius: BorderRadius.circular(50),
                ),
-               child: Align(
-                 alignment: Alignment.center,
+               scrollable: true,
+               content: ConstrainedBox(
+                 constraints:const BoxConstraints(maxWidth: 700,minHeight: 800),
                  child: Column(
-
+                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                    children: [
                      Row(
                        mainAxisAlignment: MainAxisAlignment.center,
                        children: [
-                         Container(
-                           width: 150,
-                           height: 150,
-                           padding: EdgeInsets.only(top: 40),
+                         ConstrainedBox(
+                           constraints: BoxConstraints(
+                               maxWidth: MediaQuery.of(context).size.width,
+                               minHeight: 400),
                            child: Image.asset('assets/$name.png'),
                          )
                        ],
@@ -130,7 +166,7 @@ class MySquare extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Timp de pregatire:$durata_pregatire',
+                            'Timp de pregatire:$durata_pregatire minute',
                             style: TextStyle(fontSize: 28),
                           )
                         ],
@@ -141,11 +177,28 @@ class MySquare extends StatelessWidget {
                           Flexible(
                             child: Text(
                               '      $detalii',
-                              style: TextStyle(fontSize: 18),
+                              style: const TextStyle(fontSize: 18),
                             ),
                           ),
                         ],
                       ),
+                     Row(
+                       mainAxisAlignment: MainAxisAlignment.spaceAround,
+                       children: [
+                         FloatingActionButton.extended(
+                           onPressed: () => Navigator.pop(context),
+                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                           label: Text("Cancel"),
+                         ),
+                         FloatingActionButton.extended(
+                           onPressed: () {
+                             Navigator.pop(context, name);
+                           },
+                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                           label: Text('BUY'),
+                         )
+                       ],
+                     )
                    ],
                  ),
                ),
@@ -173,4 +226,13 @@ class MySquare extends StatelessWidget {
       ),
     );
   }
+  String get wtf => _wtf;
+
+  set wtf(String value) {
+    _wtf = value;
+  }
+
 }
+
+
+
