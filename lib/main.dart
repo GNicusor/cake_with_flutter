@@ -214,7 +214,7 @@ class MySquare extends StatelessWidget {
                          FloatingActionButton.extended(
                            onPressed: () {
                              Provider.of<ShoppingCart>(context,listen: false).addItemToCart(name, 10);
-                             Navigator.pop(context, name);
+                             Navigator.pop(context);
                            },
                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                            label: Text('BUY'),
@@ -264,12 +264,35 @@ class CartPage extends StatelessWidget {
               Expanded(
                   child: ListView.builder(
                     itemCount: value.cartItems.length,
+                      padding: const EdgeInsets.all(12),
                       itemBuilder: (context,index){
                         final cartItem = value.cartItems[index];
-                        return ListTile(
-                          title: Text(cartItem.name),
-                          // You can also display the quantity if needed:
-                          // subtitle: Text('Quantity: ${cartItem.quantity}'),
+                        return Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Container(
+                            height: 100,
+                            decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(80),
+                            ),
+                            padding: EdgeInsets.all(25),
+                            child: ListTile(
+                              leading: Container(
+                                  height: 500, // Adjust the height as needed
+                                  width: 50, // Adjust the width as needed
+                                  child: Image.asset('assets/${cartItem.name}.png',fit: BoxFit.fitWidth,),
+                              ),
+                              title: Text(cartItem.name),
+                              trailing: IconButton(icon: Icon(Icons.cancel),
+                                onPressed: (){
+                                  Provider.of<ShoppingCart>(context, listen: false).removeItemFromCart(cartItem.name);
+                                  print('${cartItem.name}');
+                                },
+                              ),
+                              // You can also display the quantity if needed:
+                              // subtitle: Text('Quantity: ${cartItem.quantity}'),
+                            ),
+                          ),
                         );
                       },
                   ))
