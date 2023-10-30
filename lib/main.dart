@@ -283,6 +283,7 @@ class CartPage extends StatelessWidget {
                                   child: Image.asset('assets/${cartItem.name}.png',fit: BoxFit.fitWidth,),
                               ),
                               title: Text(cartItem.name),
+                              subtitle: Text('Pret:20'),//lene pentru a modifica clasele sa includ un pret, modific later:D
                               trailing: IconButton(icon: Icon(Icons.cancel),
                                 onPressed: (){
                                   Provider.of<ShoppingCart>(context, listen: false).removeItemFromCart(cartItem.name);
