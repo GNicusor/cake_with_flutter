@@ -302,5 +302,5 @@ class CartPage extends StatelessWidget {
 }
 
 class DoSomething{
-
+  //pe viitor sa fac meniul in care poti sa te uiti la retetele disponibile
 }
