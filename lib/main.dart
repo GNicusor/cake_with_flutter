@@ -1,6 +1,8 @@
 import 'package:cake_with_flutter/ShoppingCart.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import "dart:io";
+import 'ShoppingCart.dart';
 import "depozit.dart";
 import "retete.dart";
 import 'package:flutter/services.dart';
@@ -8,13 +10,25 @@ import 'information.dart';
 import 'package:cake_with_flutter/ShoppingCart.dart';
 import  'ShoppingCart.dart';
 
-void main() => runApp(MaterialApp(home: CakeFactory(),debugShowCheckedModeBanner: false,));
+void main() {
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ShoppingCart()),
+      ],
+      child: MaterialApp(
+        home: CakeFactory(),
+        debugShowCheckedModeBanner: false,
+      ),
+    ),
+  );
+}
 
 class CakeFactory extends StatefulWidget {
   const CakeFactory({super.key});
 
   @override
-  State<CakeFactory> createState() => _CakeFactoryState();
+  State<CakeFactory> createState() => _CakeFactoryState('');
 }
 
 class _CakeFactoryState extends State<CakeFactory> {
@@ -22,6 +36,9 @@ class _CakeFactoryState extends State<CakeFactory> {
    List<Depozit> depozits = [];
    List<MySquare> squares = [];
    String _name = '';
+
+
+   String ?idk;
 
    @override
   void initState() {
@@ -81,9 +98,12 @@ class _CakeFactoryState extends State<CakeFactory> {
         ),
         actions: <Widget> [
           FloatingActionButton(
-              onPressed: () {
-               print('meow');
-              },
+              onPressed: () => Navigator.push(context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return CartPage();
+                  },
+                ),),
               child: Icon(Icons.shopping_basket),
           ),
         ],
@@ -109,18 +129,14 @@ class _CakeFactoryState extends State<CakeFactory> {
       }),
     );
   }
-
-   void handleButtonPress(MySquare mySquare) {
-     String name = mySquare.wtf; // Use the getter to retrieve the name
-     // Now, 'name' contains the name from the MySquare widget
+   _CakeFactoryState(this.idk);
+   void handleButtonPress(String name) {
+     // Do something with the 'name' received from the MySquare widget
      print('Received name: $name');
-     // You can use 'name' in this method.
    }
 
-   set name(String value) {
-    _name = value;
-  }
 }
+
 //Nota: de facut ca box-urile sa isi faca resize in functie de ecran
 class MySquare extends StatelessWidget {
   List<ShoppingCart> chesti = [];
@@ -129,10 +145,12 @@ class MySquare extends StatelessWidget {
   String ?detalii;
   int ?durata_pregatire;
   int ?nr_prajituri;
-  String _wtf = '';
-
+  String ?wtf;
+  void Function()? onPressed;
   //MySquare(this.name) : image = Image.asset('assets/$name.png');
   MySquare(this.name, this.detalii, this.durata_pregatire, this.nr_prajituri) : image = Image.asset('assets/$name.png');
+
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -186,12 +204,16 @@ class MySquare extends StatelessWidget {
                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                        children: [
                          FloatingActionButton.extended(
-                           onPressed: () => Navigator.pop(context),
+                           onPressed: () {
+                             Navigator.pop(context);
+                             },
                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                            label: Text("Cancel"),
+
                          ),
                          FloatingActionButton.extended(
                            onPressed: () {
+                             Provider.of<ShoppingCart>(context,listen: false).addItemToCart(name, 10);
                              Navigator.pop(context, name);
                            },
                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -226,13 +248,36 @@ class MySquare extends StatelessWidget {
       ),
     );
   }
-  String get wtf => _wtf;
+}
 
-  set wtf(String value) {
-    _wtf = value;
+class CartPage extends StatelessWidget {
+  const CartPage({super.key});
+
+  @override
+
+  Widget build(BuildContext context){
+    return Scaffold(
+      appBar: AppBar(title: Text('My Cart'),),
+      body: Consumer<ShoppingCart>(builder: (context,value,child){
+        return Column (
+            children: [
+              Expanded(
+                  child: ListView.builder(
+                    itemCount: value.cartItems.length,
+                      itemBuilder: (context,index){
+                        final cartItem = value.cartItems[index];
+                        return ListTile(
+                          title: Text(cartItem.name),
+                          // You can also display the quantity if needed:
+                          // subtitle: Text('Quantity: ${cartItem.quantity}'),
+                        );
+                      },
+                  ))
+            ],
+        );
+      })
+    );
   }
 
 }
-
-
 
