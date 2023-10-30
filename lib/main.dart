@@ -131,7 +131,6 @@ class _CakeFactoryState extends State<CakeFactory> {
   }
    _CakeFactoryState(this.idk);
    void handleButtonPress(String name) {
-     // Do something with the 'name' received from the MySquare widget
      print('Received name: $name');
    }
 
@@ -278,8 +277,8 @@ class CartPage extends StatelessWidget {
                             padding: EdgeInsets.all(25),
                             child: ListTile(
                               leading: Container(
-                                  height: 500, // Adjust the height as needed
-                                  width: 50, // Adjust the width as needed
+                                  height: 500,
+                                  width: 50,
                                   child: Image.asset('assets/${cartItem.name}.png',fit: BoxFit.fitWidth,),
                               ),
                               title: Text(cartItem.name),
@@ -290,8 +289,6 @@ class CartPage extends StatelessWidget {
                                   print('${cartItem.name}');
                                 },
                               ),
-                              // You can also display the quantity if needed:
-                              // subtitle: Text('Quantity: ${cartItem.quantity}'),
                             ),
                           ),
                         );
@@ -302,6 +299,8 @@ class CartPage extends StatelessWidget {
       })
     );
   }
-
 }
 
+class DoSomething{
+
+}
